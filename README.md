@@ -1,6 +1,6 @@
 # scrape-excell-functions
 
-Will search for updated list of all excell functions and save them to _links.json file in following format:
+Will search for updated list of all excel functions and save them to _links.json file in following format:
 `
 {
 	"name": "Função ABS",
