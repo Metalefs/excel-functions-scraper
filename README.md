@@ -1,4 +1,4 @@
-# scrape-excell-functions
+# scrape-excel-functions
 
 Will search for updated list of all excel functions and save them to _links.json file in following format:
 `
