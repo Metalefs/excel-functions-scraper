@@ -178,6 +178,11 @@
     "domutils" "^3.0.1"
     "entities" "^4.3.0"
 
+"lodash@^4.17.21":
+  "integrity" "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg=="
+  "resolved" "https://f3capital.jfrog.io/artifactory/api/npm/f3capital-npm/lodash/-/lodash-4.17.21.tgz"
+  "version" "4.17.21"
+
 "mime-db@1.52.0":
   "integrity" "sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg=="
   "resolved" "https://f3capital.jfrog.io/artifactory/api/npm/f3capital-npm/mime-db/-/mime-db-1.52.0.tgz"
