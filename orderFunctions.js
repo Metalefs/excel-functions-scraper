@@ -9,27 +9,41 @@
 // 		}
 // 	}
 // }
-var _ = require('lodash');
+var _ = require("lodash");
 const fs = require("fs");
 fs.readFile("./_links.json", (err, data) => {
   if (err) throw err;
 
   const functions = JSON.parse(data);
 
-  var result = groupBy(functions, "type", "commandType", "commands");
-  result = result.map(data => {
-    return {
-        [data.commandType.replace(' ','').replace(':','')]: {
-            "category":data.commandType,
-            commands: data.commands
-        } 
-    }
-  })
+  function getCommandsAsKeys(_data){
+    let commands = {};
+    _data.commands.forEach(command => {
+      commands[command.name.replace('Função','').trim()] = command;
+    });
+    return commands;
+  }
 
-  fs.writeFile("orderedExpressions.json", JSON.stringify(result), function (err) {
-    if (err) throw err;
-    console.log("Saved!", result);
+  var result = groupBy(functions, "type", "commandType", "commands");
+  result = result.map((data) => {
+    return {
+      [data.commandType.replace(/s/g, "").replace(":", "")]: {
+        category: data.commandType.replace(":", ""),
+        commands: getCommandsAsKeys(data)
+      },
+    };
   });
+
+
+
+  fs.writeFile(
+    "_orderedExpressions.json",
+    JSON.stringify(result),
+    function (err) {
+      if (err) throw err;
+      console.log("Saved!", result);
+    }
+  );
 });
 
 function groupBy(

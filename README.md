@@ -12,9 +12,9 @@ Will search for updated list of all excel functions and save them to _links.json
 		"arguments": ["Número    Obrigatório. O número real cujo valor absoluto você deseja obter."]
 	},
 	"example": {
-		"formula": "=ABS(A2) undefined",
-		"description": "Valor absoluto de -4 undefined",
-		"result": "4 undefined"
+		"formula": "=ABS(A2)",
+		"description": "Valor absoluto de -4",
+		"result": "4"
 	}
 }
 ```
