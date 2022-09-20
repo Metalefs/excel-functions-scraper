@@ -1,6 +1,6 @@
 const parse = require("node-html-parser").parse;
 const axios = require("axios");
-const cheerio = require('cheerio');
+const cheerio = require("cheerio");
 
 let fs = require("fs");
 
@@ -19,10 +19,19 @@ const navigate = async (url) => {
     return false;
   }
 };
-const main = async () => {
+const languages = [
+  {
+    code: "pt-br",
+    path: "fun%C3%A7%C3%B5es-do-excel-orda-alfab%C3%A9tica-b3944572-255d-4efb-bb96-c6d90033e188",
+  },
+  {
+    code: "en-us",
+    path: "excel-functions-alphabetical-b3944572-255d-4efb-bb96-c6d90033e188",
+  },
+];
+const main = async (language) => {
   const document = await navigate(
-    baseUrl +
-      "pt-br/office/fun%C3%A7%C3%B5es-do-excel-orda-alfab%C3%A9tica-b3944572-255d-4efb-bb96-c6d90033e188"
+    baseUrl + `${language.code}/office/${language.path}`
   );
 
   const table = document.querySelector("table");
@@ -61,16 +70,27 @@ const main = async () => {
       ?.textContent.trim();
 
     link.syntax = {};
-    link.syntax.code = functionPage
-      .querySelector('[aria-label="Sintaxe"] p')
-      ?.textContent.trim();
-    link.syntax.alert = functionPage
-      .querySelector('[aria-label="Sintaxe"] .ocpAlertSection')
-      ?.textContent.trim();
+    let paramsUl;
+    if (language.code === "pt-br") {
+      link.syntax.code = functionPage
+        .querySelector('[aria-label="Sintaxe"] p')
+        ?.textContent.trim();
+      link.syntax.alert = functionPage
+        .querySelector('[aria-label="Sintaxe"] .ocpAlertSection')
+        ?.textContent.trim();
 
-    const paramsUl = functionPage.querySelectorAll(
-      '[aria-label="Sintaxe"] ul li'
-    );
+      paramsUl = functionPage.querySelectorAll('[aria-label="Sintaxe"] ul li');
+    } else {
+      link.syntax.code = functionPage
+        .querySelector('[aria-label="Syntax"] p')
+        ?.textContent.trim();
+      link.syntax.alert = functionPage
+        .querySelector('[aria-label="Syntax"] .ocpAlertSection')
+        ?.textContent.trim();
+
+      paramsUl = functionPage.querySelectorAll('[aria-label="Syntax"] ul li');
+    }
+
     link.syntax.arguments = [];
     for (let param of paramsUl) {
       link.syntax.arguments.push(param.querySelector("p")?.text.trim());
@@ -85,28 +105,35 @@ const main = async () => {
 
     link.example = {};
     for (let row of exampleRows) {
-        const data = row?.querySelectorAll("td");
-        link.example.formula = data[0]?.textContent.trim() ?? "";
-        link.example.description = data[1]?.textContent.trim() ?? "";
-        link.example.result = data[2]?.textContent.trim() ?? "";
+      const data = row?.querySelectorAll("td");
+      link.example.formula = data[0]?.textContent.trim() ?? "";
+      link.example.description = data[1]?.textContent.trim() ?? "";
+      link.example.result = data[2]?.textContent.trim() ?? "";
     }
 
     if (exampleHeaderInBody) {
       if (firstExampleRow) {
         try {
-          link.example.formula += " " + firstExampleRow[0]?.textContent.trim() || '';
-          link.example.description += " " + firstExampleRow[1]?.textContent.trim() || '';
-          link.example.result += " " + firstExampleRow[2]?.textContent.trim() || '';
+          link.example.formula +=
+            " " + firstExampleRow[0]?.textContent.trim() || "";
+          link.example.description +=
+            " " + firstExampleRow[1]?.textContent.trim() || "";
+          link.example.result +=
+            " " + firstExampleRow[2]?.textContent.trim() || "";
         } catch (ex) {
           console.error(ex);
         }
       }
     }
 
-    fs.writeFile("_links.json", JSON.stringify(links), function (err) {
-      if (err) throw err;
-      console.log("Saved!", link);
-    });
+    fs.writeFile(
+      `${language.code}.expressions.json`,
+      JSON.stringify(links),
+      function (err) {
+        if (err) throw err;
+        console.log("Saved!", link);
+      }
+    );
   });
 };
-main();
+for (let language of languages) main(language);
